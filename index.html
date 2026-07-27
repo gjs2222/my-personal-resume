@@ -418,6 +418,17 @@
             background: #FAF9F5;
             padding: 30px;
             border-radius: 8px;
+            grid-column: 1 / -1;
+            display: block;
+        }
+        .case-content {
+            display: block !important;
+        }
+        .case-image {
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
         .case-header {
             display: flex;
@@ -1257,6 +1268,9 @@
                         <span class="case-title">案例分析：Project Makeover</span>
                     </div>
                     <div class="case-content">
+                        <div class="case-image">
+                            <img src="images/meta.png.png" alt="Meta Ad Library - Project Makeover" style="width:100%;border-radius:8px;">
+                        </div>
                         <div class="case-section">
                             <h5>游戏介绍</h5>
                             <p>女性向三消剧情游戏——玩家通过三消关卡获得道具从而改造他人。</p>
@@ -1390,6 +1404,56 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Roblox 素材分析 -->
+                    <div class="case-study">
+                        <div class="case-header">
+                            <span class="case-icon">🎮</span>
+                            <span class="case-title">案例分析：Roblox（Google Ads Transparency Center）</span>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-image">
+                                <img src="images/google.png.png" alt="Google Ads Transparency Center - Roblox" style="width:100%;border-radius:8px;">
+                            </div>
+                            <div class="case-section">
+                                <h5>游戏介绍</h5>
+                                <p>Roblox是全球最大的UGC游戏创作与分发平台，核心变现是IAP虚拟货币，主力用户是9-16岁青少年。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>主投放版位</h5>
+                                <div style="display:flex;gap:10px;margin-bottom:12px;">
+                                    <span style="padding:6px 14px;background:#F5F3EF;border-radius:4px;font-size:0.82em;">YouTube（素材500+）</span>
+                                    <span style="padding:6px 14px;background:#F5F3EF;border-radius:4px;font-size:0.82em;">Google Play Store（素材200+）</span>
+                                </div>
+                                <p style="font-size:0.85em;color:#555;">这两个组合天然契合青少年触达路径——YouTube是青少年内容消费主阵地，Play Store是Android端下载唯一入口。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>流量逻辑</h5>
+                                <p style="font-size:0.85em;color:#555;">Google的<strong>搜索意图流量</strong> + YouTube<strong>视频推荐流量</strong>能同时覆盖"主动搜Roblox的用户"和"被动刷到想玩的用户"。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>素材策略</h5>
+                                <div style="margin-top:12px;">
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;margin-bottom:12px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">主线一：真人口播 + Gameplay（恐怖披萨店主题）</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">围绕"夜晚披萨店值班 + 无脸人顾客来买披萨 + 玩家代入商家卖披萨的恐怖剧情"展开。原型为Roblox平台内"Five Nights at Freddy's"类夜班恐怖玩法的Roblox化版本，融合了模拟经营与恐怖求生两种题材。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">主打：恐惧、好奇、刺激</span>
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#666;">副情绪：经营成就感、社交归属</span>
+                                        </div>
+                                    </div>
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">主线二：直接展示游戏内开放性内容</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">展示平台内跑酷、模拟经营、恐怖、角色扮演、驾驶、生存等多种游戏片段，体现"Roblox = 游戏的入口"的平台心智。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">主打：探索欲、选择自由</span>
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#666;">副情绪：社交分享欲</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1444,16 +1508,57 @@
                         </div>
                     </div>
                     
-                    <div class="meta-section">
+                    <div class="meta-section" style="grid-column: 1 / -1;">
                         <h4>核心指标</h4>
-                        <div class="metric-flow">
-                            <span class="metric-item">完播率</span>
-                            <span class="metric-arrow">></span>
-                            <span class="metric-item">CTR</span>
-                            <span class="metric-arrow">></span>
-                            <span class="metric-item">CPI</span>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">完播率</span>
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">CTR</span>
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">CPI</span>
                         </div>
                         <p class="meta-desc" style="margin-top:12px;">TikTok的算法看的是"用户愿不愿意看完"，和国内抖音本地推类似。</p>
+                    </div>
+                    
+                    <!-- Block Blast 素材分析 -->
+                    <div class="case-study">
+                        <div class="case-header">
+                            <span class="case-icon">🎮</span>
+                            <span class="case-title">案例分析：Block Blast（TikTok Creative Center）</span>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-image">
+                                <img src="images/tikotk.png.png" alt="TikTok Creative Center - Block Blast" style="width:100%;border-radius:8px;">
+                            </div>
+                            <div class="case-section">
+                                <h5>游戏介绍</h5>
+                                <p>Block Blast是经典方块消除休闲游戏，核心玩法是消除方块、消除得分。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>素材投放方向</h5>
+                                <div style="margin-top:12px;">
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;margin-bottom:12px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">方向一：TikTok UGC场景复刻型</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">真人在多样生活场景下玩Block Blast——吃饭时、看电视时、坐车时、躺床上时。核心逻辑是用"人的生活场景"当钩子，让泛用户产生"这游戏能融入我的碎片时间"的共鸣。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">这类素材与TikTok原生UGC内容形态一致，用户不会觉得是广告，刷到时心理防备低。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">大部分的UGC场景型都处于前段：首先不同场景本身就是一个转化的钩子，玩家在特定场景下玩Block Blast并且还有剧情对话推动，用户心理是："这人跟我挺像" / "我也在这么玩"，这种共鸣或好奇心在开头最强。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">目标：破圈拉新、打泛用户</span>
+                                        </div>
+                                    </div>
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">方向二：纯玩法展示型</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">直接展示游戏核心玩法，纯色方块落入棋盘、整行消除、连锁combo。视频时长40秒左右，靠游戏本身的视觉反馈节奏抓人。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">纯玩法素材的CTR和CVR呈现双峰：</p>
+                                        <ul style="font-size:0.82em;color:#555;margin-left:20px;margin-bottom:8px;">
+                                            <li><strong>前段（3-8秒）：</strong>快速落子 + 整行消除，这个"咔咔消除"的ASMR感和视觉反馈是Block Blast最强的即时钩子，这是"品类兴趣用户"的转化峰</li>
+                                            <li><strong>后端（30秒后）：</strong>棋盘变满、颜色堆叠，是"高意向 + 爽点释放"的转化峰</li>
+                                        </ul>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">目标：精准找消除品类用户</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1664,6 +1769,16 @@
                                     <li>⏱️ 回本周期比IAP快</li>
                                     <li>📈 ROAS的增速和留存</li>
                                 </ul>
+                                <div style="border-top:1px solid #F0EEEA;margin-top:20px;padding-top:20px;">
+                                    <h5>投放决策：</h5>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">需要通过回传数据判断：分平台/媒体/实际素材（计划）的维度去分别判断每一条计划是否能够ROAS达到预期或者跑正，每次加量后重新监控其ROAS。</p>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">ROAS D1/D3/D7+</span>
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">次留</span>
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">七日留存</span>
+                                    </div>
+                                    <p style="font-size:0.82em;color:#666;margin-top:8px;">通过以上指标判断是否要继续加量。</p>
+                                </div>
                             </div>
                         </div>
                         <div class="iap-card">
@@ -1678,24 +1793,19 @@
                                     <li>⏱️ 回本周期慢于IAA游戏</li>
                                     <li>🔄 后期用户运营和版本更新也很重要</li>
                                 </ul>
+                                <div style="border-top:1px solid #E5EAF0;margin-top:20px;padding-top:20px;">
+                                    <h5>投放决策：</h5>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">IAP游戏更需要注意LTV的构成：<br>LTV = 安装量 × 付费率（Payer Rate） × ARPPU × 付费用户留存衰减</p>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">需要预测付费率和付费用户的长期留存衰减，按国家、渠道、广告组、素材分群，分别建模预测LTV，监控最终ROAS。</p>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按国家分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按渠道分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按广告组分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按素材分群</span>
+                                    </div>
+                                    <p style="font-size:0.82em;color:#666;margin-top:8px;">分别建模预测LTV，监控最终ROAS。</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 投放决策 -->
-                <div class="strategy-section">
-                    <h3 class="strategy-subtitle">投放决策</h3>
-                    <div class="decision-content">
-                        <p class="decision-intro">需要通过回传数据判断：分平台/媒体/实际素材（计划）的维度去分别判断每一条计划是否能够ROAS达到预期或者跑正，每次加量后重新监控其ROAS。</p>
-                        <div class="monitor-metrics">
-                            <h5>监控指标：</h5>
-                            <div class="metric-tags">
-                                <span class="metric-tag">ROAS D1/D3/D7+</span>
-                                <span class="metric-tag">次留</span>
-                                <span class="metric-tag">七日留存</span>
-                            </div>
-                            <p>通过以上指标判断是否要继续加量。</p>
                         </div>
                     </div>
                 </div>
