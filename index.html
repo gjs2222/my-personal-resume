@@ -302,6 +302,129 @@
             text-align: justify;
         }
 
+        /* 投放优化闭环 */
+        .optimization-loop {
+            margin-top: 35px;
+            padding-top: 30px;
+            border-top: 2px solid #9A8442;
+            background: #FAF9F5;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .loop-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .loop-subtitle {
+            font-size: 0.88em;
+            color: #8B7355;
+            margin-bottom: 25px;
+        }
+        .loop-step {
+            display: flex;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 0.5px solid;
+            margin-bottom: 6px;
+            align-items: flex-start;
+            transition: border-color 0.2s;
+        }
+        .loop-step:hover {
+            border-color: #9A8442;
+        }
+        .loop-step-blue {
+            background: #F0F7FF;
+            border-color: #C4A77D;
+        }
+        .loop-step-green {
+            background: #F0FAF5;
+            border-color: #C4A77D;
+        }
+        .loop-step-yellow {
+            background: #FFF8ED;
+            border-color: #C4A77D;
+        }
+        .loop-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        .loop-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .loop-step-title {
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #1A1A1A;
+            margin-bottom: 3px;
+        }
+        .loop-step-desc {
+            font-size: 0.88em;
+            color: #555;
+            line-height: 1.55;
+        }
+        .loop-result {
+            font-size: 0.82em;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin-top: 7px;
+            display: inline-block;
+        }
+        .loop-connector {
+            text-align: center;
+            font-size: 12px;
+            color: #8B7355;
+            padding: 2px 0 2px 46px;
+            letter-spacing: 2px;
+        }
+        .loop-flywheel {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px dashed #C4A77D;
+            font-size: 0.88em;
+            color: #555;
+            background: white;
+        }
+        .loop-flywheel b {
+            color: #1A1A1A;
+            font-weight: 500;
+        }
+        .backend-data {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed #C4A77D;
+        }
+        .backend-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .backend-desc {
+            font-size: 0.88em;
+            color: #8B7355;
+            margin-bottom: 16px;
+        }
+        .backend-image {
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
         /* 海外投放理解 */
         #ad-platforms { padding: 60px 0; }
         .platform-tree {
@@ -1113,9 +1236,67 @@
                     <span class="project-role">副负责人</span>
                     <div class="project-desc-list">
                         <p class="project-desc">投放素材体系搭建：建立素材库与文案库，持续追踪招商类短视频创意趋势，为投放端输出适配公司业务方向的素材与文案策略，保障广告内容持续迭代。</p>
-                        <p class="project-desc">投放节奏与成本管控：监控 oecpm 与线索转化目标（留表单），根据数据反馈动态调整投放节奏，在低线索量阶段重点优化获客成本，提升前端投放效率。</p>
+                        <p class="project-desc">投放节奏与成本管控：监控 ocpm 与线索转化目标（留表单），根据数据反馈动态调整投放节奏，在低线索量阶段重点优化获客成本，提升前端投放效率。</p>
                         <p class="project-desc">线索转化漏斗优化：梳理"曝光 → 互动 → 留资 → 电邀 → 成交"全链路流失漏斗，分析各节点转化率，针对性优化表单组件，减少留资操作步骤以降低用户流失，提升线索获取量。</p>
                         <p class="project-desc">前后端数据指标对齐：将抖音广告平台前端指标与招商部 CRM 后端指标进行对齐分析，建立"前端投放 → 后端成交"的数据闭环，识别并筛选高质量线索标准，驱动投放策略向有效线索倾斜。</p>
+                    </div>
+                    
+                    <!-- 投放优化闭环 -->
+                    <div class="optimization-loop">
+                        <div class="loop-title">投放优化</div>
+                        <div class="loop-subtitle">选城 → 转化路径 → 素材策略 → 再回城市</div>
+                        
+                        <div class="loop-step loop-step-blue">
+                            <div class="loop-num" style="background:#B5D4F4;color:#0C447C">1</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">城市策略优化</div>
+                                <div class="loop-step-desc">对回传数据（消耗、CTR、CPC、转化成本、5秒播放率、75%观看率等）做交叉分析，筛选高效城市；结合公司商业可达范围排除无法落地城市，释放预算重新分配至高 ROI 区域</div>
+                                <div class="loop-result" style="background:#E6F1FB;color:#0C447C">OCPM 下降，线索有效性不降</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-green">
+                            <div class="loop-num" style="background:#9FE1CB;color:#085041">2</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">转化路径调整：私信 → 表单</div>
+                                <div class="loop-step-desc">诊断私信「一键留资」导致用户无决策过程、无效线索堆积、客服压力过大；迁移至表单收集，用填写门槛过滤低意向用户，同步优化表单字段</div>
+                                <div class="loop-result" style="background:#E1F5EE;color:#085041">无效线索降低 30%</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-yellow">
+                            <div class="loop-num" style="background:#FAC775;color:#633806">3</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">素材策略迭代：高留存剪辑重组</div>
+                                <div class="loop-step-desc">表单优化后消耗量级下降，主动拓展新题材方向；从历史数据提取高5秒留存片头 + 高完播留存片尾，剪裁组合批量产出高潜力素材，突破消耗瓶颈</div>
+                                <div class="loop-result" style="background:#FAEEDA;color:#633806">消耗量级回升</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-blue">
+                            <div class="loop-num" style="background:#B5D4F4;color:#0C447C">4</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">回到城市优化：新数据重新评估</div>
+                                <div class="loop-step-desc">素材策略带动消耗回升后，基于最新回传数据重新评估各城市投放效率与预算分配，开启新一轮迭代</div>
+                                <div class="loop-result" style="background:#E6F1FB;color:#0C447C">持续动态优化</div>
+                            </div>
+                        </div>
+                        
+                        <div class="loop-flywheel">
+                            <b>↻ 闭环飞轮</b>：每轮优化触发下一环节重新评估，形成自我驱动的持续改进机制
+                        </div>
+                        
+                        <!-- 后端数据建设 -->
+                        <div class="backend-data">
+                            <div class="backend-title">后端数据建设</div>
+                            <div class="backend-desc">搭建完整的数据指标体系，支撑前端投放决策与后端成交分析</div>
+                            <div class="backend-image">
+                                <img src="images/后端数据建设.png" alt="后端数据建设" style="width:100%;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
