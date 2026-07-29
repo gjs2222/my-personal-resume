@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历</title>
+    
+    <!-- 引入图表所需字体、图标库和 ECharts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Times New Roman', 'SimSun', serif; 
+            line-height: 1.8; 
+            color: #2C2C2C; 
+            background: #F8F6F1; 
+            letter-spacing: 0.5px;
+        }
+        
+        /* 导航栏 */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.92); 
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            transition: all 0.4s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        nav.scrolled { padding: 8px 0; }
+        nav .container { max-width: 850px; margin: 0 auto; padding: 20px 40px; }
+        nav ul { display: flex; justify-content: flex-end; gap: 40px; list-style: none; }
+        nav a { 
+            text-decoration: none; 
+            color: #555; 
+            font-size: 0.95em;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        nav a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 1px; background: #8B7355;
+            transition: width 0.3s ease;
+        }
+        nav a:hover { color: #8B7355; }
+        nav a:hover::after { width: 100%; }
+
+        /* 主要内容区 */
+        .container { max-width: 850px; margin: 0 auto; padding: 0 40px; }
+        
+        /* 头部 */
+        header { 
+            padding: 80px 0;
+            background: #F8F6F1;
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        .header-left {
+            width: 220px;
+            text-align: left;
+            position: sticky;
+            top: 120px;
+            align-self: flex-start;
+        }
+        .header-left h1 { 
+            font-size: 3.5em; 
+            font-weight: 400; 
+            color: #1A1A1A; 
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease;
+        }
+        .header-left .contact-info {
+            font-size: 1em; 
+            color: #7A7A7A; 
+            line-height: 2.2;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        .header-left .contact-info p {
+            margin-bottom: 10px;
+        }
+        .header-right {
+            flex: 1;
+            padding-left: 60px;
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* 区块通用样式 */
+        section { padding: 60px 0; opacity: 0; }
+        section.visible { opacity: 1; }
+        section.visible .section-title { animation: slideInLeft 0.7s ease; }
+        section.visible .content { animation: slideInRight 0.7s ease 0.2s both; }
+        
+        .section-title {
+            font-size: 1.15em; 
+            color: #8B7355; 
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 40px; height: 1px; background: #D4C4A8;
+        }
+
+        /* 个人简介 */
+        #about .content { max-width: 650px; }
+        #about p { 
+            font-size: 1.05em; 
+            color: #4A4A4A; 
+            line-height: 2; 
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        /* 学习经历 */
+        .header-right .education-grid { display: flex; flex-direction: column; gap: 20px; }
+        .header-right .education-item {
+            background: white;
+            padding: 25px;
+            position: relative;
+            transition: transform 0.4s ease;
+        }
+        .education-item:hover { transform: translateY(-3px); }
+        .education-item::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: linear-gradient(180deg, #C4A77D, #8B7355);
+        }
+        .education-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .education-school { 
+            font-size: 1.3em; 
+            font-weight: 500; 
+            color: #1A1A1A; 
+            letter-spacing: 1px;
+        }
+        .education-date { 
+            font-size: 0.9em; 
+            color: #9A9A9A; 
+            letter-spacing: 1px;
+        }
+        .education-major { 
+            font-size: 1em; 
+            color: #8B7355; 
+            margin-bottom: 18px;
+            font-style: italic;
+        }
+        .education-desc { 
+            font-size: 0.98em; 
+            color: #555; 
+            line-height: 2;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        .education-courses {
+            margin-top: 20px;
+        }
+        .education-courses-label {
+            font-size: 0.9em;
+            color: #8B7355;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .education-courses-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .education-course-tag {
+            background: #F5F3EF;
+            color: #555;
+            padding: 4px 12px;
+            font-size: 0.85em;
+        }
+
+        /* 工作经历 */
+        .timeline { position: relative; }
+        .timeline::before {
+            content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+            width: 1px; background: #E5E0D8;
+        }
+        .timeline-item {
+            position: relative; padding-left: 55px; margin-bottom: 25px;
+            background: white;
+            padding: 25px;
+            transition: transform 0.4s ease;
+        }
+        .timeline-item:hover { transform: translateX(5px); }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -17px; top: 40px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #8B7355;
+            border: 2px solid #F8F6F1;
+        }
+        .timeline-header { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .timeline-title { 
+            font-weight: 500; 
+            color: #1A1A1A; 
+            font-size: 1.15em; 
+            letter-spacing: 1px;
+        }
+        .timeline-date { color: #9A9A9A; font-size: 0.9em; }
+        .timeline-company { 
+            color: #8B7355; 
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .timeline-desc { color: #555; line-height: 1.9; font-size: 0.98em; }
+
+        /* 技能 */
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 25px; }
+        .skill-tag {
+            background: white;
+            color: #555; 
+            padding: 10px 25px;
+            font-size: 1em;
+            border: 1px solid #E5E0D8;
+            transition: all 0.3s ease;
+        }
+        .skill-tag:hover { 
+            border-color: #8B7355;
+            color: #8B7355;
+        }
+
+        /* 项目经验 */
+        .project-item {
+            background: white;
+            padding: 30px;
+            position: relative;
+        }
+        .project-item::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: linear-gradient(180deg, #C4A77D, #8B7355);
+        }
+        .project-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .project-title { 
+            font-size: 1.2em; 
+            font-weight: 500; 
+            color: #1A1A1A; 
+            letter-spacing: 1px;
+        }
+        .project-date { 
+            font-size: 0.9em; 
+            color: #9A9A9A; 
+            letter-spacing: 1px;
+        }
+        .project-role { 
+            font-size: 0.95em; 
+            color: #8B7355; 
+            margin-bottom: 25px;
+            display: block;
+            font-style: italic;
+        }
+        .project-desc-list { max-width: 700px; }
+        .project-desc { 
+            font-size: 0.98em; 
+            color: #555; 
+            line-height: 2;
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+
+        /* 投放优化闭环 */
+        .optimization-loop {
+            margin-top: 35px;
+            padding-top: 30px;
+            border-top: 2px solid #9A8442;
+            background: #FAF9F5;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .loop-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .loop-subtitle {
+            font-size: 0.88em;
+            color: #8B7355;
+            margin-bottom: 25px;
+        }
+        .loop-step {
+            display: flex;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 0.5px solid;
+            margin-bottom: 6px;
+            align-items: flex-start;
+            transition: border-color 0.2s;
+        }
+        .loop-step:hover {
+            border-color: #9A8442;
+        }
+        .loop-step-blue { background: #F0F7FF; border-color: #C4A77D; }
+        .loop-step-green { background: #F0FAF5; border-color: #C4A77D; }
+        .loop-step-yellow { background: #FFF8ED; border-color: #C4A77D; }
+        .loop-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        .loop-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .loop-step-title {
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #1A1A1A;
+            margin-bottom: 3px;
+        }
+        .loop-step-desc {
+            font-size: 0.88em;
+            color: #555;
+            line-height: 1.55;
+        }
+        .loop-result {
+            font-size: 0.82em;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin-top: 7px;
+            display: inline-block;
+        }
+        .loop-connector {
+            text-align: center;
+            font-size: 12px;
+            color: #8B7355;
+            padding: 2px 0 2px 46px;
+            letter-spacing: 2px;
+        }
+        .loop-flywheel {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px dashed #C4A77D;
+            font-size: 0.88em;
+            color: #555;
+            background: white;
+        }
+        .loop-flywheel b {
+            color: #1A1A1A;
+            font-weight: 500;
+        }
+        .backend-data {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed #C4A77D;
+        }
+        .backend-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .backend-desc {
+            font-size: 0.88em;
+            color: #8B7355;
+            margin-bottom: 16px;
+        }
+        .backend-image {
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        /* 海外投放理解 */
+        #ad-platforms { padding: 60px 0; }
+        .platform-tree {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 平台详细卡片 */
+        #platform-detail-section { padding: 60px 0; }
+        .platform-card {
+            background: white;
+            padding: 35px;
+            margin-bottom: 30px;
+            border-left: 4px solid #9A8442;
+        }
+        .platform-card:last-child { margin-bottom: 0; }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #F5F3EF;
+        }
+        .card-icon { font-size: 1.5em; }
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #1A1A1A;
+            letter-spacing: 1px;
+        }
+        .card-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .card-content h4 {
+            font-size: 0.95em;
+            color: #9A8442;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .card-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .card-content li {
+            font-size: 0.92em;
+            color: #555;
+            line-height: 2;
+            position: relative;
+            padding-left: 18px;
+        }
+        .card-content li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #C4A77D;
+        }
+
+        /* Meta卡片样式 */
+        .meta-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #F5F3EF;
+        }
+        .meta-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .meta-section h4 {
+            font-size: 0.95em;
+            color: #9A8442;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .meta-desc {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        .tag-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .meta-tag {
+            background: #F8F6F1;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #555;
+            border: 1px solid #E5E0D8;
+        }
+        .meta-link {
+            font-size: 0.9em;
+            color: #9A8442;
+            text-decoration: none;
+            border-bottom: 1px dashed #9A8442;
+            transition: all 0.3s ease;
+        }
+        .meta-link:hover {
+            color: #8B7355;
+            border-bottom-style: solid;
+        }
+
+        /* 案例分析样式 */
+        .case-study {
+            margin-top: 35px;
+            padding-top: 30px;
+            border-top: 2px solid #9A8442;
+            background: #FAF9F5;
+            padding: 30px;
+            border-radius: 8px;
+            grid-column: 1 / -1;
+            display: block;
+        }
+        .case-content {
+            display: block !important;
+        }
+        .case-image {
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .case-icon { font-size: 1.4em; }
+        .case-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1A1A1A;
+            letter-spacing: 1px;
+        }
+        .case-section {
+            margin-bottom: 20px;
+        }
+        .case-section:last-child { margin-bottom: 0; }
+        .case-section h5 {
+            font-size: 0.9em;
+            color: #9A8442;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .case-section p {
+            font-size: 0.88em;
+            color: #555;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        .case-list {
+            list-style: none;
+            padding: 0;
+        }
+        .case-list li {
+            font-size: 0.88em;
+            color: #555;
+            line-height: 1.8;
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+        .case-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #9A8442;
+        }
+        
+        /* 卡片副标题 */
+        .card-subtitle {
+            font-size: 0.75em;
+            color: #9A8442;
+            margin-left: 8px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 高亮标签 */
+        .meta-tag.highlight {
+            background: #9A8442;
+            color: #fff;
+            border-color: #9A8442;
+        }
+        
+        /* 核心指标流程 */
+        .metric-flow {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #9A8442;
+            flex-wrap: wrap;
+        }
+        .metric-item {
+            font-size: 0.88em;
+            color: #333;
+            font-weight: 600;
+            background: #F5F3EF;
+            padding: 8px 16px;
+            border-radius: 4px;
+            min-width: 70px;
+            text-align: center;
+        }
+        .metric-arrow {
+            color: #9A8442;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        /* 双重身份样式 */
+        .dual-identity {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .identity-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #9A8442;
+        }
+        .identity-label {
+            display: block;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #9A8442;
+            margin-bottom: 5px;
+        }
+        .identity-desc {
+            font-size: 0.85em;
+            color: #555;
+        }
+        
+        /* 特点列表 */
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .feature-item {
+            font-size: 0.88em;
+            color: #555;
+            padding: 8px 15px;
+            background: #FAF9F5;
+            border-radius: 4px;
+            border: 1px solid #F0EEEA;
+        }
+        
+        /* 策略表格 */
+        .strategy-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        .table-header {
+            display: flex;
+            background: #9A8442;
+            color: #fff;
+            padding: 12px 15px;
+            font-weight: 500;
+            border-radius: 4px 4px 0 0;
+        }
+        .table-header span {
+            flex: 1;
+            text-align: left;
+        }
+        .table-row {
+            display: flex;
+            padding: 12px 15px;
+            border-bottom: 1px solid #F0EEEA;
+            color: #555;
+        }
+        .table-row:last-child {
+            border-bottom: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .table-row span {
+            flex: 1;
+            text-align: left;
+        }
+        .table-row:hover {
+            background: #FAF9F5;
+        }
+        
+        /* 叙事弧线 */
+        .narrative-flow {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #9A8442;
+        }
+        .narrative-step {
+            font-size: 0.85em;
+            color: #333;
+            font-weight: 500;
+            background: #F5F3EF;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+        .narrative-arrow {
+            color: #9A8442;
+            font-weight: bold;
+        }
+
+        /* 投放策略深度解析 */
+        #ad-strategy { padding: 60px 0; }
+        .strategy-section {
+            margin-bottom: 45px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #F0EEEA;
+        }
+        .strategy-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .strategy-subtitle {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .strategy-subtitle::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #9A8442;
+            border-radius: 2px;
+        }
+
+        /* Bidding vs Waterfall 对比表 */
+        .comparison-table {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #F0EEEA;
+        }
+        .comparison-table .table-row {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid #F0EEEA;
+        }
+        .comparison-table .table-row:last-child { border-bottom: none; }
+        .comparison-table .table-row.header {
+            background: #9A8442;
+            color: #fff;
+            font-weight: 500;
+        }
+        .comparison-table .col-1 { flex: 1; min-width: 150px; }
+        .comparison-table .col-2 { flex: 2; color: #555; font-size: 0.92em; line-height: 1.6; }
+        .comparison-table .table-row.header .col-2 { color: #fff; }
+        .mode-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .mode-tag.bidding {
+            background: #9A8442;
+            color: #fff;
+        }
+        .mode-tag.waterfall {
+            background: #F5F3EF;
+            color: #555;
+            border: 1px solid #E5E0D8;
+        }
+
+        /* IAA vs IAP 对比卡片 */
+        .iaa-iap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .iaa-card, .iap-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .iaa-card { border-left: 4px solid #9A8442; }
+        .iap-card { border-left: 4px solid #003660; }
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+        .card-badge.iaa { background: #9A8442; color: #fff; }
+        .card-badge.iap { background: #003660; color: #fff; }
+        .iaa-card h4, .iap-card h4 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+        }
+        .card-content p {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .card-content h5 {
+            font-size: 0.88em;
+            color: #9A8442;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* 投放决策 */
+        .decision-content {
+            background: #FAF9F5;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 3px solid #9A8442;
+        }
+        .decision-intro {
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        .monitor-metrics h5 {
+            font-size: 0.9em;
+            color: #9A8442;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .metric-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .metric-tag {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.88em;
+            color: #333;
+            border: 1px solid #E5E0D8;
+            font-weight: 500;
+        }
+        .monitor-metrics p {
+            font-size: 0.88em;
+            color: #666;
+        }
+
+        /* 投放四象限 */
+        .quadrant-container { position: relative; }
+        .quadrant-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .quadrant-item {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #F0EEEA;
+        }
+        .quadrant-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        .quadrant-icon { font-size: 2em; margin-bottom: 12px; }
+        .quadrant-item h4 {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 10px;
+        }
+        .quadrant-action { font-size: 0.85em; color: #555; line-height: 1.6; }
+        .quadrant-item.q1 { border-top: 3px solid #9A8442; }
+        .quadrant-item.q2 { border-top: 3px solid #C4A77D; }
+        .quadrant-item.q3 { border-top: 3px solid #E5E0D8; }
+        .quadrant-item.q4 { border-top: 3px solid #D4A574; }
+        .quadrant-axis {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .axis-label {
+            font-size: 0.82em;
+            color: #888;
+            margin: 0 15px;
+        }
+
+        /* 用户画像思考因素 */
+        #user-profile { padding: 60px 0; }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 4px solid #9A8442;
+            transition: all 0.3s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(154, 132, 66, 0.1);
+        }
+        .profile-icon { font-size: 2.5em; margin-bottom: 15px; }
+        .profile-card h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .profile-tag {
+            background: #F8F6F1;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #555;
+            border: 1px solid #E5E0D8;
+        }
+        .profile-tag.highlight {
+            background: #9A8442;
+            color: #fff;
+            border-color: #9A8442;
+        }
+        .profile-desc {
+            font-size: 0.88em;
+            color: #666;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* 联系方式 */
+        #contact { text-align: center; }
+        #contact .content { max-width: 500px; margin: 0 auto; }
+        #contact .contact-info { 
+            display: flex; 
+            justify-content: center; 
+            gap: 50px; 
+            flex-wrap: wrap; 
+            margin-top: 40px; 
+            padding-top: 40px;
+            border-top: 1px solid #E5E0D8;
+        }
+        .contact-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+        .contact-item span:first-child { 
+            font-size: 1.4em; 
+            opacity: 0.7;
+        }
+        .contact-item a { 
+            color: #555; 
+            text-decoration: none; 
+            font-size: 0.92em;
+            transition: color 0.3s ease;
+        }
+        .contact-item a:hover { color: #8B7355; }
+        .contact-item .label { 
+            font-size: 0.78em; 
+            color: #9A9A9A; 
+            letter-spacing: 1px;
+        }
+
+        /* 页脚 */
+        footer { 
+            background: #1A1A1A; 
+            color: #F8F6F1; 
+            text-align: center; 
+            padding: 40px;
+            margin-top: 60px;
+        }
+        footer p { 
+            opacity: 0.6; 
+            font-size: 0.88em;
+            letter-spacing: 2px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            nav ul { gap: 20px; justify-content: center; }
+            nav .container { padding: 15px 20px; }
+            nav a { font-size: 0.85em; }
+            header .container { flex-direction: column; }
+            .header-left { width: 100%; text-align: center; position: static; margin-bottom: 30px; }
+            .header-left h1 { font-size: 2.8em; }
+            .header-right { padding-left: 0; }
+            .container { padding: 0 20px; }
+            section { padding: 50px 0; }
+            .education-item, .timeline-item { padding: 20px; }
+            .education-header, .timeline-header { flex-direction: column; }
+        }
+
+        /* ======= 新增：生命周期面板专属样式 ======= */
+        :root {
+            --panel-bg: #FFFFFF;
+            --border-color: #E8E5DF;
+            --accent-color: #B29F84;
+            --chart-whale: #7CA18C;
+            --chart-low: #C4A782;
+            --chart-free: #7A90A4;
+            --font-primary: 'Outfit', sans-serif;
+            --font-secondary: 'Inter', sans-serif;
+        }
+
+        #lifecycle .content { max-width: 850px; }
+        .chart-wrapper {
+            width: 100%; height: 400px; background: var(--panel-bg);
+            border: none; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+            border-radius: 4px; padding: 1rem; margin-bottom: 2.5rem;
+        }
+        .dashboard-grid {
+            display: grid; grid-template-columns: 280px 1fr; gap: 2rem;
+            font-family: var(--font-secondary);
+        }
+        .lifecycle-controller { display: flex; flex-direction: column; gap: 0.8rem; }
+        .stage-btn {
+            background: transparent; border: 1px solid transparent; color: #7A7571;
+            font-family: var(--font-primary); text-align: left; padding: 1rem; 
+            border-radius: 4px; display: flex; align-items: center; gap: 1rem; 
+            cursor: pointer; transition: 0.3s ease; font-size: 1em;
+        }
+        .stage-indicator {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; 
+            color: #7A7571; transition: 0.3s ease; flex-shrink: 0;
+        }
+        .stage-name { font-weight: 500; transition: 0.3s ease; }
+        .stage-btn:hover { background: rgba(255,255,255,0.5); }
+        .stage-btn.active { 
+            background: var(--panel-bg); box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+            border-left: 3px solid var(--accent-color); border-radius: 0 4px 4px 0;
+        }
+        .stage-btn.active .stage-indicator { background: var(--accent-color); color: #fff; }
+        .stage-btn.active .stage-name { color: #2C2C2C; font-weight: 600; }
+        .data-panel {
+            background: var(--panel-bg); border-left: 4px solid var(--accent-color);
+            border-radius: 0 4px 4px 0; padding: 2rem; display: flex; flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03); transition: opacity 0.3s ease;
+        }
+        .strategy-overview {
+            display: flex; gap: 2rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);
+        }
+        .strategy-block { flex: 1; display: flex; flex-direction: column; gap: 0.6rem; }
+        .block-title {
+            font-family: var(--font-primary); font-size: 1.05em; font-weight: 600;
+            color: #2C2C2C; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .block-title i { color: var(--accent-color); font-size: 1.2rem; }
+        .block-desc { font-size: 0.9em; color: #555; line-height: 1.7; text-align: justify;}
+        .block-quote { font-style: italic; color: var(--accent-color); font-weight: 500; font-size: 0.9em; }
+        .channel-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        .channel-card { display: flex; flex-direction: column; gap: 0.5rem; }
+        .channel-header { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-primary); font-size: 1.05em; font-weight: 600; color: #2C2C2C; }
+        .channel-header i { font-size: 1.3rem; color: var(--accent-color); }
+        .profile-desc { font-size: 0.88em; color: #555; line-height: 1.7; text-align: justify; padding-left: 28px;}
+        
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .lifecycle-controller { flex-direction: row; flex-wrap: wrap; }
+            .stage-btn { width: 48%; padding: 0.8rem; }
+            .strategy-overview { flex-direction: column; gap: 1.5rem; }
+        }
+        /* ============================================== */
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="container">
+            <ul>
+                <li><a href="#education">学习经历</a></li>
+                <li><a href="#experience">实习经历</a></li>
+                <li><a href="#projects">项目经验</a></li>
+                <li><a href="#skills">技能特长</a></li>
+                <li><a href="#ad-platforms">海外平台</a></li>
+                <li><a href="#user-profile">用户画像</a></li>
+                <li><a href="#ad-strategy">IAA/IAP差别</a></li>
+                <!-- 导航栏新增 -->
+                <li><a href="#lifecycle">生命周期</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <h1>高锦松</h1>
+                <div class="contact-info">
+                    <p>📱 18783013115</p>
+                    <p>💬 微信：18783013115</p>
+                    <p>📧 2443381780@qq.com</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <h2 class="section-title">学习经历</h2>
+                <div class="content">
+                    <div class="education-grid">
+                        <div class="education-item">
+                            <div class="education-header">
+                                <span class="education-school">加州大学圣塔芭芭拉分校</span>
+                                <span class="education-date">2018 - 2022</span>
+                            </div>
+                            <p class="education-major">会计学与经济学双专业 / 学士学位</p>
+                            <p class="education-desc">本科阶段系统打通了会计与经济分析两条主线，尤其在管理会计与财务会计分析上形成了较为扎实的方法积累，能从成本结构、报表信息与商业逻辑多个层面理解一家公司的财务状况。</p>
+                            <div class="education-courses">
+                                <span class="education-courses-label">主修课程</span>
+                                <div class="education-courses-list">
+                                    <span class="education-course-tag">管理会计学</span>
+                                    <span class="education-course-tag">所得税法</span>
+                                    <span class="education-course-tag">审计学</span>
+                                    <span class="education-course-tag">管理经济学</span>
+                                    <span class="education-course-tag">高级会计</span>
+                                    <span class="education-course-tag">中级会计</span>
+                                    <span class="education-course-tag">财务会计分析</span>
+                                    <span class="education-course-tag">微观经济学</span>
+                                    <span class="education-course-tag">宏观经济学</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="education-item">
+                            <div class="education-header">
+                                <span class="education-school">约翰霍普金斯大学</span>
+                                <span class="education-date">2022 - 2024</span>
+                            </div>
+                            <p class="education-major">应用经济学 / 硕士学位</p>
+                            <p class="education-desc">学习重心转向金融市场理论与计量经济学工具，专注于资产定价、衍生品与金融计量等课程，以统计与计量模型对宏观与市场变量进行预测与拟合。</p>
+                            <div class="education-courses">
+                                <span class="education-courses-label">主修课程</span>
+                                <div class="education-courses-list">
+                                    <span class="education-course-tag">金融经济学</span>
+                                    <span class="education-course-tag">衍生品经济学</span>
+                                    <span class="education-course-tag">金融计量学</span>
+                                    <span class="education-course-tag">计量经济学</span>
+                                    <span class="education-course-tag">宏观理论</span>
+                                    <span class="education-course-tag">微观理论</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 学习经历占位（保持导航锚点） -->
+    <section id="education" style="display:none;"></section>
+
+    <!-- 实习经历 -->
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">实习经历</h2>
+            <div class="content">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-title">中台运营实习生</span>
+                            <span class="timeline-date">2025.12 - 2026.02</span>
+                        </div>
+                        <span class="timeline-company">北京国际信托有限公司 · 业务四部 | 北京</span>
+                        <p class="timeline-desc">信托项目合规流程管理：负责信托合同从起草到归档的全周期内部流转，协调风控、法务、审批等多部门审核节点，推动多个项目完成合规审批，保障项目按期落地。</p>
+                        <p class="timeline-desc">地方政府流动资金缺口测算：基于财政收支数据与债务口径，对地方政府流动资金缺口进行定量测算，编制合规性测算报告，为信托项目风险评审提供数据支撑。</p>
+                        <p class="timeline-desc">尽职调查文档体系搭建：系统整理并撰写项目尽职调查所需资料包，涵盖财务数据、法律文件、政府批复等，确保审查材料完整性与合规要求一致性。</p>
+                        <p class="timeline-desc">信用风险舆情监测：建立地方政府舆情跟踪机制，实时监控融资主体信用事件与政策变动，及时预警潜在违约风险，保障信托资产安全性。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-title">策略运营实习生</span>
+                            <span class="timeline-date">2024.06 - 2024.08</span>
+                        </div>
+                        <span class="timeline-company">淘天事业部 · 售后体验部门 | 杭州</span>
+                        <p class="timeline-desc">深度参与电商售后体验提升专项，聚焦退款处理与物流追踪等核心场景，基于售后工单和日志提取并清洗用户行为链数据，运用漏斗分析模型定位售后场景中核心卡点和体验断点，助力售后首次解决率提升1个百分点。</p>
+                        <p class="timeline-desc">参与设计售后策略框架以提升体验，针对用户在售后场景遇到的核心问题，参与搭建自动触发信息卡片、物流赔付、商家约束、自助服务等策略框架。</p>
+                        <p class="timeline-desc">参与自助信息卡片的设计和更新，通过A/B实验对比不同卡片分流效率，有效降低人工客服转接率，提升自动化服务占比。</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-title">暑期实习生</span>
+                            <span class="timeline-date">2023.06 - 2023.08</span>
+                        </div>
+                        <span class="timeline-company">华西证券股份有限公司 · 财富管理部 | 成都</span>
+                        <p class="timeline-desc">综合追踪美国大豆主产区天气变化、CBOT大豆期货价格走势及农业部出口数据，预测未来6个月内大豆价格上涨约10%-12%；仔猪补栏需求上升，预计未来6个月仔猪阶段饲料需求增长约10%-12%；带动豆粕消费增加，推升大豆进口量预计增长约5%-8%；豆粕价格上涨推高仔猪阶段饲料成本，加重养殖端成本压力。</p>
+                        <p class="timeline-desc">搭建生猪养殖成本单测算模型（单位出栏成本分解法），量化评估玉米、豆粕等原材料价格波动对企业毛利率的冲击敏感度，对比不同养殖模式产生的毛利差异。</p>
+                        <p class="timeline-desc">基于对龙头企业养殖模式与成本弹性差异的横向比较，结合能繁母猪存栏量及环保政策变化，准确预测2023年末行业复苏拐点，筛选出5家具备风险收益优势的投资标的，助力投资组合优化配置。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目经验 -->
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">项目经验</h2>
+            <div class="content">
+                <div class="project-item">
+                    <div class="project-header">
+                        <span class="project-title">抖音本地推 B 端招商获客项目</span>
+                        <span class="project-date">2026.02 - 至今</span>
+                    </div>
+                    <span class="project-role">副负责人</span>
+                    <div class="project-desc-list">
+                        <p class="project-desc">投放素材体系搭建：建立素材库与文案库，持续追踪招商类短视频创意趋势，为投放端输出适配公司业务方向的素材与文案策略，保障广告内容持续迭代。</p>
+                        <p class="project-desc">投放节奏与成本管控：监控 ocpm 与线索转化目标（留表单），根据数据反馈动态调整投放节奏，在低线索量阶段重点优化获客成本，提升前端投放效率。</p>
+                        <p class="project-desc">线索转化漏斗优化：梳理"曝光 → 互动 → 留资 → 电邀 → 成交"全链路流失漏斗，分析各节点转化率，针对性优化表单组件，减少留资操作步骤以降低用户流失，提升线索获取量。</p>
+                        <p class="project-desc">前后端数据指标对齐：将抖音广告平台前端指标与招商部 CRM 后端指标进行对齐分析，建立"前端投放 → 后端成交"的数据闭环，识别并筛选高质量线索标准，驱动投放策略向有效线索倾斜。</p>
+                    </div>
+                    
+                    <!-- 投放优化闭环 -->
+                    <div class="optimization-loop">
+                        <div class="loop-title">投放优化</div>
+                        <div class="loop-subtitle">选城 → 转化路径 → 素材策略 → 再回城市</div>
+                        
+                        <div class="loop-step loop-step-blue">
+                            <div class="loop-num" style="background:#B5D4F4;color:#0C447C">1</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">城市策略优化</div>
+                                <div class="loop-step-desc">对回传数据（消耗、CTR、CPC、转化成本、5秒播放率、75%观看率等）做交叉分析，筛选高效城市；结合公司商业可达范围排除无法落地城市，释放预算重新分配至高 ROI 区域</div>
+                                <div class="loop-result" style="background:#E6F1FB;color:#0C447C">OCPM 下降，线索有效性不降</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-green">
+                            <div class="loop-num" style="background:#9FE1CB;color:#085041">2</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">转化路径调整：私信 → 表单</div>
+                                <div class="loop-step-desc">诊断私信「一键留资」导致用户无决策过程、无效线索堆积、客服压力过大；迁移至表单收集，用填写门槛过滤低意向用户，同步优化表单字段</div>
+                                <div class="loop-result" style="background:#E1F5EE;color:#085041">无效线索降低 30%</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-yellow">
+                            <div class="loop-num" style="background:#FAC775;color:#633806">3</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">素材策略迭代：高留存剪辑重组</div>
+                                <div class="loop-step-desc">表单优化后消耗量级下降，主动拓展新题材方向；从历史数据提取高5秒留存片头 + 高完播留存片尾，剪裁组合批量产出高潜力素材</div>
+                                <div class="loop-result" style="background:#FAEEDA;color:#633806">消耗量级回升</div>
+                            </div>
+                        </div>
+                        <div class="loop-connector">▼</div>
+                        
+                        <div class="loop-step loop-step-blue">
+                            <div class="loop-num" style="background:#B5D4F4;color:#0C447C">4</div>
+                            <div class="loop-body">
+                                <div class="loop-step-title">回到城市优化：新数据重新评估</div>
+                                <div class="loop-step-desc">素材策略带动消耗回升后，基于数据重新回调各城市投放效率与预算分配</div>
+                                <div class="loop-result" style="background:#E6F1FB;color:#0C447C">持续优化</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 后端数据建设 -->
+                        <div class="backend-data">
+                            <div class="backend-title">后端数据建设</div>
+                            <div class="backend-desc"></div>
+                            <div class="backend-image">
+                                <img src="images/后端数据建设.png" alt="后端数据建设" style="width:100%;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能特长 -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">技能特长</h2>
+            <div class="content">
+                <div class="skills-grid">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Excel</span>
+                    <span class="skill-tag">Tableau</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 海外投放理解 -->
+    <section id="ad-platforms">
+        <div class="container">
+            <h2 class="section-title">海外投放理解</h2>
+            <div class="content">
+                <!-- 平台分类树（SVG树状图） -->
+                <div class="platform-tree">
+                    <svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block">
+                        <line x1="400" y1="210" x2="400" y2="90" stroke="#9A8442" stroke-width="1" opacity="0.35" stroke-dasharray="6 4"/>
+                        <line x1="455" y1="232" x2="610" y2="150" stroke="#9A8442" stroke-width="1" opacity="0.35" stroke-dasharray="6 4"/>
+                        <line x1="455" y1="188" x2="610" y2="270" stroke="#9A8442" stroke-width="1" opacity="0.35" stroke-dasharray="6 4"/>
+                        <line x1="345" y1="188" x2="190" y2="270" stroke="#9A8442" stroke-width="1" opacity="0.35" stroke-dasharray="6 4"/>
+                        <line x1="345" y1="232" x2="190" y2="150" stroke="#9A8442" stroke-width="1" opacity="0.35" stroke-dasharray="6 4"/>
+
+                        <!-- 中心节点 - 海外投放 -->
+                        <g>
+                            <rect x="340" y="182" width="120" height="56" rx="12" fill="#9A8442"/>
+                            <text x="400" y="205" text-anchor="middle" fill="#fff" font-family="Times New Roman,serif" font-size="15" font-weight="500">海外投放</text>
+                            <text x="400" y="225" text-anchor="middle" fill="#fff" font-family="Microsoft YaHei,sans-serif" font-size="10" opacity="0.8">Overseas UA</text>
+                        </g>
+
+                        <!-- AppLovin -->
+                        <g onclick="scrollToPlatform('platform-applovin')" style="cursor:pointer;">
+                            <rect x="345" y="58" width="110" height="52" rx="10" fill="#fff" stroke="#003660" stroke-width="1.5" style="transition:all 0.3s ease;" onmouseover="this.setAttribute('fill','#F5F3EF');this.setAttribute('stroke-width','2');" onmouseout="this.setAttribute('fill','#fff');this.setAttribute('stroke-width','1.5');"/>
+                            <text x="400" y="80" text-anchor="middle" fill="#003660" font-family="Times New Roman,serif" font-size="14" font-weight="500">AppLovin</text>
+                            <text x="400" y="98" text-anchor="middle" fill="#6B6B6B" font-family="Microsoft YaHei,sans-serif" font-size="10">IAA 首选</text>
+                        </g>
+
+                        <!-- Mintegral -->
+                        <g onclick="scrollToPlatform('platform-mintegral')" style="cursor:pointer;">
+                            <rect x="610" y="124" width="110" height="52" rx="10" fill="#fff" stroke="#003660" stroke-width="1.5" style="transition:all 0.3s ease;" onmouseover="this.setAttribute('fill','#F5F3EF');this.setAttribute('stroke-width','2');" onmouseout="this.setAttribute('fill','#fff');this.setAttribute('stroke-width','1.5');"/>
+                            <text x="665" y="146" text-anchor="middle" fill="#003660" font-family="Times New Roman,serif" font-size="14" font-weight="500">Mintegral</text>
+                            <text x="665" y="164" text-anchor="middle" fill="#6B6B6B" font-family="Microsoft YaHei,sans-serif" font-size="10">新兴市场</text>
+                        </g>
+
+                        <!-- TikTok -->
+                        <g onclick="scrollToPlatform('platform-tiktok')" style="cursor:pointer;">
+                            <rect x="610" y="244" width="110" height="52" rx="10" fill="#fff" stroke="#003660" stroke-width="1.5" style="transition:all 0.3s ease;" onmouseover="this.setAttribute('fill','#F5F3EF');this.setAttribute('stroke-width','2');" onmouseout="this.setAttribute('fill','#fff');this.setAttribute('stroke-width','1.5');"/>
+                            <text x="665" y="266" text-anchor="middle" fill="#003660" font-family="Times New Roman,serif" font-size="14" font-weight="500">TikTok</text>
+                            <text x="665" y="284" text-anchor="middle" fill="#6B6B6B" font-family="Microsoft YaHei,sans-serif" font-size="10">短视频买量</text>
+                        </g>
+
+                        <!-- Meta -->
+                        <g onclick="scrollToPlatform('platform-meta')" style="cursor:pointer;">
+                            <rect x="80" y="244" width="110" height="52" rx="10" fill="#fff" stroke="#003660" stroke-width="1.5" style="transition:all 0.3s ease;" onmouseover="this.setAttribute('fill','#F5F3EF');this.setAttribute('stroke-width','2');" onmouseout="this.setAttribute('fill','#fff');this.setAttribute('stroke-width','1.5');"/>
+                            <text x="135" y="266" text-anchor="middle" fill="#003660" font-family="Times New Roman,serif" font-size="14" font-weight="500">Meta</text>
+                            <text x="135" y="284" text-anchor="middle" fill="#6B6B6B" font-family="Microsoft YaHei,sans-serif" font-size="10">社交投放</text>
+                        </g>
+
+                        <!-- Google -->
+                        <g onclick="scrollToPlatform('platform-google')" style="cursor:pointer;">
+                            <rect x="80" y="124" width="110" height="52" rx="10" fill="#fff" stroke="#003660" stroke-width="1.5" style="transition:all 0.3s ease;" onmouseover="this.setAttribute('fill','#F5F3EF');this.setAttribute('stroke-width','2');" onmouseout="this.setAttribute('fill','#fff');this.setAttribute('stroke-width','1.5');"/>
+                            <text x="135" y="146" text-anchor="middle" fill="#003660" font-family="Times New Roman,serif" font-size="14" font-weight="500">Google</text>
+                            <text x="135" y="164" text-anchor="middle" fill="#6B6B6B" font-family="Microsoft YaHei,sans-serif" font-size="10">搜索+视频</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 平台详细模块 -->
+    <section id="platform-detail-section">
+        <div class="container">
+            <!-- Meta -->
+            <div id="platform-meta" class="platform-card">
+                <div class="card-header">
+                    <span class="card-icon">📱</span>
+                    <span class="card-title">Meta 投放体系</span>
+                </div>
+                <div class="card-content">
+                    <div class="meta-section">
+                        <h4>广告版位</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">Facebook Feed</span>
+                            <span class="meta-tag">Instagram Feed</span>
+                            <span class="meta-tag">Instagram Reels</span>
+                            <span class="meta-tag">Instagram Stories</span>
+                            <span class="meta-tag">Messenger</span>
+                            <span class="meta-tag">Audience Network</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>平台定位</h4>
+                        <p class="meta-desc">社交+内容推荐混合生态，用户主动浏览+被动推荐并存。<strong>核心逻辑：广告必须适配Meta生态</strong>——无论什么游戏方向，在Meta上的广告都要有实际的故事剧情推导，让广告自然融入用户的内容流，不打断用户心流。Meta不是"插播广告打断浏览"，而是"广告本身就是一段值得看的内容"。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>用户画像</h4>
+                        <p class="meta-desc">全球最广覆盖，25-45女性用户活跃度高，适合休闲/剧情类游戏。Meta的生态调性是分享生活/讲故事/展示自我，所以女性向和策略经营类游戏天然适配这个调性。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>核心广告格式</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">视频广告</span>
+                            <span class="meta-tag">轮播广告</span>
+                            <span class="meta-tag">试玩广告</span>
+                            <span class="meta-tag">静态图片</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>特点</h4>
+                        <p class="meta-desc">Lookalike定向精准（类似于抖音本地推的深转里的种子用户）、付费用户定向能力强。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>适用游戏</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">女性向休闲</span>
+                            <span class="meta-tag">剧情改造</span>
+                            <span class="meta-tag">模拟经营</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>Ad Library</h4>
+                        <a href="https://www.facebook.com/ads/library" target="_blank" class="meta-link">https://www.facebook.com/ads/library</a>
+                        <p class="meta-desc">可查看所有在跑广告</p>
+                    </div>
+                </div>
+                
+                <!-- Project Makeover 案例分析 -->
+                <div class="case-study">
+                    <div class="case-header">
+                        <span class="case-icon">🎮</span>
+                        <span class="case-title">案例分析：Project Makeover</span>
+                    </div>
+                    <div class="case-content">
+                        <div class="case-image">
+                            <img src="images/meta.png.png" alt="Meta Ad Library - Project Makeover" style="width:100%;border-radius:8px;">
+                        </div>
+                        <div class="case-section">
+                            <h5>游戏介绍</h5>
+                            <p>女性向三消剧情游戏——玩家通过三消关卡获得道具从而改造他人。</p>
+                        </div>
+                        <div class="case-section">
+                            <h5>生态适配</h5>
+                            <p>在Instagram中用户喜欢看别人的生活故事，用户化妆变美（改造分享），用户追求社交认同感。</p>
+                        </div>
+                        <div class="case-section">
+                            <h5>素材策略</h5>
+                            <p>素材本身讲述女主的生活故事，展现从窘迫到蜕变的过程。社交羞辱环节能够让用户产生"帮女主改造"的参与感。</p>
+                        </div>
+                        <div class="case-section">
+                            <h5>叙事弧线</h5>
+                            <div class="narrative-flow">
+                                <span class="narrative-step">窘迫（起点）</span>
+                                <span class="narrative-arrow">→</span>
+                                <span class="narrative-step">羞辱/困境（放大痛点）</span>
+                                <span class="narrative-arrow">→</span>
+                                <span class="narrative-step">改造过程（制造期待）</span>
+                                <span class="narrative-arrow">→</span>
+                                <span class="narrative-step">反转蜕变</span>
+                            </div>
+                            <p>PM素材会把窘迫和羞辱来回调整顺序，找到让观众最能留下来观看的点。70%的素材围绕窘迫起点和羞辱放大这两个部分，尤其是：房间脏乱/穿着邋遢/男神嫌弃/老公嫌弃等奇葩素材风格（因冰雪主题大火，近年也有很多冰天雪地中艰难生活的钩子）。</p>
+                        </div>
+                        <div class="case-section">
+                            <h5>情绪价值</h5>
+                            <div class="tag-grid">
+                                <span class="meta-tag">好奇</span>
+                                <span class="meta-tag">焦虑</span>
+                                <span class="meta-tag">看笑话</span>
+                            </div>
+                        </div>
+                        <div class="case-section">
+                            <h5>投放策略</h5>
+                            <ul class="case-list">
+                                <li><strong>Lowest Cost</strong>：走量获取用户第一波游戏内数据和测试素材方向，再优化画像</li>
+                                <li><strong>Cost Cap + First Purchase/CPI</strong>：获取用户数</li>
+                                <li><strong>ROAS-Value Optimization</strong>：优化回收找到大R，IAP游戏需大R拉高整体盈利</li>
+                            </ul>
+                        </div>
+                        <div class="case-section">
+                            <h5>市场分析</h5>
+                            <p>收入主要来自美国+T1级别国家，目前从T2国家补量。Meta渠道投放已全部暂停——可能是Meta渠道竞争激烈、获客价格持续攀升，转而从AppLovin或Mintegral中补量。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google -->
+            <div id="platform-google" class="platform-card">
+                <div class="card-header">
+                    <span class="card-icon">🔍</span>
+                    <span class="card-title">Google 投放体系</span>
+                    <span class="card-subtitle">Google Ads / App Campaigns / AdMob</span>
+                </div>
+                <div class="card-content">
+                    <div class="meta-section">
+                        <h4>广告版位</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">Search</span>
+                            <span class="meta-tag">Display Network</span>
+                            <span class="meta-tag">YouTube</span>
+                            <span class="meta-tag">Google Play Store</span>
+                            <span class="meta-tag">Discover</span>
+                            <span class="meta-tag">Gmail</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>投放工具</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag highlight">App Campaigns（原UAC）</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>平台定位</h4>
+                        <p class="meta-desc">Search有搜索意图（精准转化），UAC/PMax是算法自动分配版位走量。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>用户画像</h4>
+                        <p class="meta-desc">Search偏主动搜索用户（意图强），YouTube偏视频浏览用户（兴趣驱动）。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>特点</h4>
+                        <p class="meta-desc">Play Store自然流量并且ASO优化能提高游戏排名和落地页优化、Search意图精准。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>适用游戏</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">所有品类</span>
+                            <span class="meta-tag">RPG</span>
+                            <span class="meta-tag">策略</span>
+                        </div>
+                        <p class="meta-desc" style="margin-top:8px;">尤其适合Search意图高的品类（RPG、策略）。</p>
+                    </div>
+                </div>
+                
+                <!-- 投放策略表格 -->
+                <div class="case-study">
+                    <div class="case-header">
+                        <span class="case-icon">⚙️</span>
+                        <span class="case-title">投放策略</span>
+                    </div>
+                    <div class="case-content">
+                        <p class="meta-desc" style="margin-bottom:15px;">不同的出价单位优化的目标搭配不一样：</p>
+                        <div class="strategy-table">
+                            <div class="table-header">
+                                <span>投放类型</span>
+                                <span>优化目标</span>
+                                <span>适用阶段</span>
+                            </div>
+                            <div class="table-row">
+                                <span>App Campaigns - Installs</span>
+                                <span>app_install（控CPI或不控）</span>
+                                <span>起量阶段</span>
+                            </div>
+                            <div class="table-row">
+                                <span>App Campaigns - Installs with tROAS</span>
+                                <span>purchase价值（控ROAS）</span>
+                                <span>IAP游戏回收阶段</span>
+                            </div>
+                            <div class="table-row">
+                                <span>App Campaigns - Engagement</span>
+                                <span>自定义事件（重新激活老用户）</span>
+                                <span>已有用户池的再营销</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Roblox 素材分析 -->
+                    <div class="case-study">
+                        <div class="case-header">
+                            <span class="case-icon">🎮</span>
+                            <span class="case-title">案例分析：Roblox（Google Ads Transparency Center）</span>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-image">
+                                <img src="images/google.png.png" alt="Google Ads Transparency Center - Roblox" style="width:100%;border-radius:8px;">
+                            </div>
+                            <div class="case-section">
+                                <h5>游戏介绍</h5>
+                                <p>Roblox是全球最大的UGC游戏创作与分发平台，核心变现是IAP虚拟货币，主力用户是9-16岁青少年。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>主投放版位</h5>
+                                <div style="display:flex;gap:10px;margin-bottom:12px;">
+                                    <span style="padding:6px 14px;background:#F5F3EF;border-radius:4px;font-size:0.82em;">YouTube（素材500+）</span>
+                                    <span style="padding:6px 14px;background:#F5F3EF;border-radius:4px;font-size:0.82em;">Google Play Store（素材200+）</span>
+                                </div>
+                                <p style="font-size:0.85em;color:#555;">这两个组合天然契合青少年触达路径——YouTube是青少年内容消费主阵地，Play Store是Android端下载唯一入口。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>流量逻辑</h5>
+                                <p style="font-size:0.85em;color:#555;">Google的<strong>搜索意图流量</strong> + YouTube<strong>视频推荐流量</strong>能同时覆盖"主动搜Roblox的用户"和"被动刷到想玩的用户"。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>素材策略</h5>
+                                <div style="margin-top:12px;">
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;margin-bottom:12px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">主线一：真人口播 + Gameplay（恐怖披萨店主题）</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">围绕"夜晚披萨店值班 + 无脸人顾客来买披萨 + 玩家代入商家卖披萨的恐怖剧情"展开。原型为Roblox平台内"Five Nights at Freddy's"类夜班恐怖玩法的Roblox化版本，融合了模拟经营与恐怖求生两种题材。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">主打：恐惧、好奇、刺激</span>
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#666;">副情绪：经营成就感、社交归属</span>
+                                        </div>
+                                    </div>
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">主线二：直接展示游戏内开放性内容</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">展示平台内跑酷、模拟经营、恐怖、角色扮演、驾驶、生存等多种游戏片段，体现"Roblox = 游戏的入口"的平台心智。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">主打：探索欲、选择自由</span>
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#666;">副情绪：社交分享欲</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TikTok -->
+            <div id="platform-tiktok" class="platform-card">
+                <div class="card-header">
+                    <span class="card-icon">🎵</span>
+                    <span class="card-title">TikTok 投放体系</span>
+                    <span class="card-subtitle">TikTok Ads</span>
+                </div>
+                <div class="card-content">
+                    <div class="meta-section">
+                        <h4>广告版位</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">TikTok Feed</span>
+                            <span class="meta-tag">TikTok TopView</span>
+                            <span class="meta-tag">Pangle（海外版穿山甲）</span>
+                        </div>
+                        <p class="meta-desc" style="margin-top:8px;">均为TikTok广告投放版位。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>平台定位</h4>
+                        <p class="meta-desc">内容推荐生态，纯被动浏览，靠算法推荐驱动。<strong>核心：广告要融入短视频内容流</strong>——TikTok用户是在"刷"，广告必须像一条原生短视频一样让用户愿意看完，硬推CTA或生硬打断=用户直接划走。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>用户画像</h4>
+                        <p class="meta-desc">18-30年轻用户为主，娱乐性消费强，付费习惯不如Meta用户（App生命周期不一样带来的用户沉淀不如Meta成熟）。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>核心广告格式</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">短视频广告（15-60s）</span>
+                            <span class="meta-tag">Spark Ads（用真实帖子做广告）</span>
+                        </div>
+                        <p class="meta-desc" style="margin-top:8px;">更要做好UGC内容。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>特点</h4>
+                        <p class="meta-desc">CPM相对Meta低（被动划走和被动推荐带来）、年轻用户量大、短视频格式天然适合游戏素材。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>适用游戏</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">超休闲</span>
+                            <span class="meta-tag">潮流类</span>
+                            <span class="meta-tag">年轻用户导向</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section" style="grid-column: 1 / -1;">
+                        <h4>核心指标</h4>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">完播率</span>
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">CTR</span>
+                            <span style="padding:8px 16px;background:#F5F3EF;border-radius:4px;font-size:0.88em;font-weight:600;color:#333;">CPI</span>
+                        </div>
+                        <p class="meta-desc" style="margin-top:12px;">TikTok的算法看的是"用户愿不愿意看完"，和国内抖音本地推类似。</p>
+                    </div>
+                    
+                    <!-- Block Blast 素材分析 -->
+                    <div class="case-study">
+                        <div class="case-header">
+                            <span class="case-icon">🎮</span>
+                            <span class="case-title">案例分析：Block Blast（TikTok Creative Center）</span>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-image">
+                                <img src="images/tikotk.png.png" alt="TikTok Creative Center - Block Blast" style="width:100%;border-radius:8px;">
+                            </div>
+                            <div class="case-section">
+                                <h5>游戏介绍</h5>
+                                <p>Block Blast是经典方块消除休闲游戏，核心玩法是消除方块、消除得分。</p>
+                            </div>
+                            <div class="case-section">
+                                <h5>素材投放方向</h5>
+                                <div style="margin-top:12px;">
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;margin-bottom:12px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">方向一：TikTok UGC场景复刻型</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">真人在多样生活场景下玩Block Blast——吃饭时、看电视时、坐车时、躺床上时。核心逻辑是用"人的生活场景"当钩子，让泛用户产生"这游戏能融入我的碎片时间"的共鸣。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">这类素材与TikTok原生UGC内容形态一致，用户不会觉得是广告，刷到时心理防备低。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">大部分的UGC场景型都处于前段：首先不同场景本身就是一个转化的钩子，玩家在特定场景下玩Block Blast并且还有剧情对话推动，用户心理是："这人跟我挺像" / "我也在这么玩"，这种共鸣或好奇心在开头最强。</p>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">目标：破圈拉新、打泛用户</span>
+                                        </div>
+                                    </div>
+                                    <div style="background:#FAF9F5;border-radius:8px;padding:16px;border-left:4px solid #9A8442;">
+                                        <h6 style="font-weight:600;margin-bottom:8px;">方向二：纯玩法展示型</h6>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">直接展示游戏核心玩法，纯色方块落入棋盘、整行消除、连锁combo。视频时长40秒左右，靠游戏本身的视觉反馈节奏抓人。</p>
+                                        <p style="font-size:0.82em;color:#555;margin-bottom:8px;">纯玩法素材的CTR和CVR呈现双峰：</p>
+                                        <ul style="font-size:0.82em;color:#555;margin-left:20px;margin-bottom:8px;">
+                                            <li><strong>前段（3-8秒）：</strong>快速落子 + 整行消除，这个"咔咔消除"的ASMR感和视觉反馈是Block Blast最强的即时钩子，这是"品类兴趣用户"的转化峰</li>
+                                            <li><strong>后端（30秒后）：</strong>棋盘变满、颜色堆叠，是"高意向 + 爽点释放"的转化峰</li>
+                                        </ul>
+                                        <div style="display:flex;gap:8px;font-size:0.8em;">
+                                            <span style="padding:4px 10px;background:#fff;border-radius:4px;color:#8B5A2B;">目标：精准找消除品类用户</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AppLovin -->
+            <div id="platform-applovin" class="platform-card">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <span class="card-title">AppLovin</span>
+                </div>
+                <div class="card-content">
+                    <div class="meta-section">
+                        <h4>版位</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">激励视频</span>
+                            <span class="meta-tag">插屏</span>
+                            <span class="meta-tag">Banner</span>
+                            <span class="meta-tag">开屏广告</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>双重身份</h4>
+                        <div class="dual-identity">
+                            <div class="identity-item">
+                                <span class="identity-label">MAX</span>
+                                <span class="identity-desc">应用内变现聚合（In-App Bidding）</span>
+                            </div>
+                            <div class="identity-item">
+                                <span class="identity-label">AppLovin Ads</span>
+                                <span class="identity-desc">投放渠道</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>用户画像</h4>
+                        <p class="meta-desc">休闲游戏玩家为主，IAA游戏最强阵地，美国市场较强（AppLovin从自有游戏起家—现在已经是纯算法但还是天然贴近IAA小游戏）。</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>核心指标</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag highlight">ARPDAU</span>
+                            <span class="meta-tag highlight">eCPM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>特点</h4>
+                        <div class="feature-list">
+                            <span class="feature-item">🎮 对休闲游戏用户理解深</span>
+                            <span class="feature-item">⚖️ Bidding模式公平竞价</span>
+                            <span class="feature-item">🇺🇸 美国市场量级大</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mintegral -->
+            <div id="platform-mintegral" class="platform-card">
+                <div class="card-header">
+                    <span class="card-icon">💰</span>
+                    <span class="card-title">Mintegral</span>
+                </div>
+                <div class="card-content">
+                    <div class="meta-section">
+                        <h4>定位</h4>
+                        <p class="meta-desc">中国出海的移动广告平台，亚太和新兴市场强补充T3/T4国家用户量级，IAA最合适，亚太+新兴市场的IAA强渠道，是AppLovin的互补</p>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>特点</h4>
+                        <div class="feature-list">
+                            <span class="feature-item">🌏 东南亚、拉美量级好</span>
+                            <span class="feature-item">💰 CPI低</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meta-section">
+                        <h4>适用场景</h4>
+                        <div class="tag-grid">
+                            <span class="meta-tag">IAA游戏</span>
+                            <span class="meta-tag">新兴市场补量</span>
+                            <span class="meta-tag">T3/T4国家</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 用户画像 -->
+    <section id="user-profile">
+        <div class="container">
+            <h2 class="section-title">用户画像</h2>
+            <div class="content">
+                <div class="profile-grid">
+                    <!-- 因素1：人口基本 -->
+                    <div class="profile-card">
+                        <div class="profile-icon">👥</div>
+                        <h3>人口基本</h3>
+                        <div class="profile-tags">
+                            <span class="profile-tag">性别</span>
+                            <span class="profile-tag">年龄</span>
+                            <span class="profile-tag">收入</span>
+                            <span class="profile-tag">职业</span>
+                            <span class="profile-tag">教育水平</span>
+                        </div>
+                        <p class="profile-desc">基础人口属性，决定用户的消费能力和消费习惯。</p>
+                    </div>
+
+                    <!-- 因素2：行为特征 -->
+                    <div class="profile-card">
+                        <div class="profile-icon">📊</div>
+                        <h3>行为特征</h3>
+                        <div class="profile-tags">
+                            <span class="profile-tag">付费历史</span>
+                            <span class="profile-tag">游戏历史</span>
+                            <span class="profile-tag">活跃时段</span>
+                            <span class="profile-tag">安装历史</span>
+                            <span class="profile-tag">游戏内行为</span>
+                        </div>
+                        <p class="profile-desc">用户的行为轨迹，反映真实的消费能力和兴趣偏好。</p>
+                    </div>
+
+                    <!-- 因素3：心理与兴趣 -->
+                    <div class="profile-card">
+                        <div class="profile-icon">💭</div>
+                        <h3>心理与兴趣</h3>
+                        <div class="profile-tags">
+                            <span class="profile-tag">兴趣标签</span>
+                            <span class="profile-tag">情绪</span>
+                            <span class="profile-tag">动机</span>
+                        </div>
+                        <p class="profile-desc">用户为什么玩游戏？被什么所吸引去下载？理解用户的内在动机。</p>
+                    </div>
+
+                    <!-- 因素4：设备 -->
+                    <div class="profile-card">
+                        <div class="profile-icon">📱</div>
+                        <h3>设备</h3>
+                        <div class="profile-tags">
+                            <span class="profile-tag highlight">iOS</span>
+                            <span class="profile-tag highlight">Android</span>
+                        </div>
+                        <p class="profile-desc">iOS和Android用户付费意愿和消费能力不同，投放价格也不同。</p>
+                    </div>
+
+                    <!-- 因素5：地理位置 -->
+                    <div class="profile-card">
+                        <div class="profile-icon">🌍</div>
+                        <h3>地理位置</h3>
+                        <div class="profile-tags">
+                            <span class="profile-tag">美国</span>
+                            <span class="profile-tag">T1国家</span>
+                            <span class="profile-tag">T2国家</span>
+                            <span class="profile-tag">T3/T4国家</span>
+                        </div>
+                        <p class="profile-desc">不同地区用户的消费习惯、付费能力和市场竞争程度差异显著。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 投放策略深度解析 -->
+    <section id="ad-strategy">
+        <div class="container">
+            <h2 class="section-title">投放策略深度解析</h2>
+            <div class="content">
+                
+                <!-- Bidding vs Waterfall -->
+                <div class="strategy-section">
+                    <h3 class="strategy-subtitle">Bidding vs Waterfall</h3>
+                    <div class="comparison-table">
+                        <div class="table-row header">
+                            <span class="col-1">模式</span>
+                            <span class="col-2">说明</span>
+                        </div>
+                        <div class="table-row">
+                            <span class="col-1">
+                                <span class="mode-tag bidding">In-App Bidding</span>
+                            </span>
+                            <span class="col-2">实时竞价，出价最高的网络实时赢得展示（AppLovin MAX采用）</span>
+                        </div>
+                        <div class="table-row">
+                            <span class="col-1">
+                                <span class="mode-tag waterfall">Waterfall</span>
+                            </span>
+                            <span class="col-2">按历史eCPM排序，从上往下逐层尝试（传统模式）——填充会更慢</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IAA vs IAP -->
+                <div class="strategy-section">
+                    <h3 class="strategy-subtitle">IAA vs IAP</h3>
+                    <div class="iaa-iap-grid">
+                        <div class="iaa-card">
+                            <div class="card-badge iaa">IAA</div>
+                            <h4>广告变现模式</h4>
+                            <div class="card-content">
+                                <p>把用户留在游戏中让用户不断地接触到游戏内嵌的广告从而获得收入，提高用户的LTV。</p>
+                                <h5>投放关注点：</h5>
+                                <ul>
+                                    <li>🎯 渠道质量（是否达到渠道ROI回正预期）</li>
+                                    <li>⏱️ 回本周期比IAP快</li>
+                                    <li>📈 ROAS的增速和留存</li>
+                                </ul>
+                                <div style="border-top:1px solid #F0EEEA;margin-top:20px;padding-top:20px;">
+                                    <h5>投放决策：</h5>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">需要通过回传数据判断：分平台/媒体/实际素材（计划）的维度去分别判断每一条计划是否能够ROAS达到预期或者跑正，每次加量后重新监控其ROAS。</p>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">ROAS D1/D3/D7+</span>
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">次留</span>
+                                        <span style="padding:6px 14px;background:#FAF9F5;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #E5E0D8;">七日留存</span>
+                                    </div>
+                                    <p style="font-size:0.82em;color:#666;margin-top:8px;">通过以上指标判断是否要继续加量。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="iap-card">
+                            <div class="card-badge iap">IAP</div>
+                            <h4>内购付费模式</h4>
+                            <div class="card-content">
+                                <p>让用户在游戏中愿意花钱购买游戏中的各种购买点，用户付费深度要更高。</p>
+                                <h5>投放关注点：</h5>
+                                <ul>
+                                    <li>💰 找付费意愿更强的用户</li>
+                                    <li>📊 关注ROAS和ARPU（ARPPU）</li>
+                                    <li>⏱️ 回本周期慢于IAA游戏</li>
+                                    <li>🔄 后期用户运营和版本更新也很重要</li>
+                                </ul>
+                                <div style="border-top:1px solid #E5EAF0;margin-top:20px;padding-top:20px;">
+                                    <h5>投放决策：</h5>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">IAP游戏更需要注意LTV的构成：<br>LTV = 安装量 × 付费率（Payer Rate） × ARPPU × 付费用户留存衰减</p>
+                                    <p style="font-size:0.85em;color:#555;margin-bottom:12px;">需要预测付费率和付费用户的长期留存衰减，按国家、渠道、广告组、素材分群，分别建模预测LTV，监控最终ROAS。</p>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按国家分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按渠道分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按广告组分群</span>
+                                        <span style="padding:6px 14px;background:#F0F4F8;border-radius:4px;font-size:0.82em;color:#333;border:1px solid #D8DEE6;">按素材分群</span>
+                                    </div>
+                                    <p style="font-size:0.82em;color:#666;margin-top:8px;">分别建模预测LTV，监控最终ROAS。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 投放四象限 -->
+                <div class="strategy-section">
+                    <h3 class="strategy-subtitle">投放四象限</h3>
+                    <div class="quadrant-container">
+                        <div class="quadrant-grid">
+                            <div class="quadrant-item q1">
+                                <div class="quadrant-icon">📈</div>
+                                <h4>回收好有量</h4>
+                                <p class="quadrant-action">加量投放</p>
+                            </div>
+                            <div class="quadrant-item q2">
+                                <div class="quadrant-icon">🔍</div>
+                                <h4>回收好没量</h4>
+                                <p class="quadrant-action">继续投放，拼接别的素材钩子/情绪/内容衔接去看是否能把量买起来</p>
+                            </div>
+                            <div class="quadrant-item q3">
+                                <div class="quadrant-icon">❌</div>
+                                <h4>回收不好没量</h4>
+                                <p class="quadrant-action">直接关</p>
+                            </div>
+                            <div class="quadrant-item q4">
+                                <div class="quadrant-icon">⚠️</div>
+                                <h4>回收不好有量</h4>
+                                <p class="quadrant-action">降预算能否把ROAS回到预期值</p>
+                            </div>
+                        </div>
+                        <div class="quadrant-axis">
+                            <span class="axis-label x">有量 ← 量的维度 → 没量</span>
+                            <span class="axis-label y">回收好 ↓ 回收维度 ↑ 回收不好</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======= 新增：动态生命周期区块 ======= -->
+    <section id="lifecycle">
+        <div class="container">
+            <h2 class="section-title">动态生命周期策略</h2>
+            <div class="content">
+                <div class="chart-wrapper" id="lifecycleChart"></div>
+
+                <div class="dashboard-grid">
+                    <div class="lifecycle-controller">
+                        <button class="stage-btn active" data-stage="0" onclick="switchStage(0)">
+                            <div class="stage-indicator">01</div><span class="stage-name">冷启动期</span>
+                        </button>
+                        <button class="stage-btn" data-stage="1" onclick="switchStage(1)">
+                            <div class="stage-indicator">02</div><span class="stage-name">爆发放量期</span>
+                        </button>
+                        <button class="stage-btn" data-stage="2" onclick="switchStage(2)">
+                            <div class="stage-indicator">03</div><span class="stage-name">成熟调优期</span>
+                        </button>
+                        <button class="stage-btn" data-stage="3" onclick="switchStage(3)">
+                            <div class="stage-indicator">04</div><span class="stage-name">长尾衰退期</span>
+                        </button>
+                    </div>
+                    
+                    <div class="data-panel" id="dataPanel"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2026 高锦松 - 个人简历</p>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 滚动触发动画
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // 当加载到图表部分时，触发重新渲染以防止初始计算宽度错误
+                    if(entry.target.id === 'lifecycle' && window.myChartInstance) {
+                        window.myChartInstance.resize();
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // SVG平台点击滚动函数
+        function scrollToPlatform(platformId) {
+            const target = document.getElementById(platformId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ======= 新增：ECharts 图表与面板切换逻辑 =======
+        const chartDom = document.getElementById('lifecycleChart');
+        if(chartDom) {
+            const myChart = echarts.init(chartDom);
+            window.myChartInstance = myChart; // 挂载到全局供 Observer 使用
+            
+            const colorWhale = '#7CA18C';
+            const colorLow = '#C4A782';
+            const colorFree = '#7A90A4';
+            const axisColor = '#D4D0C8';
+            const textColor = '#7A7571';
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'line', lineStyle: { color: axisColor } },
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#E8E5DF',
+                    textStyle: { color: '#2C2C2C' },
+                    extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 4px;'
+                },
+                legend: {
+                    data: ['普通用户 (Free)', '小R (Low Spender)', '大R (Whale)'],
+                    textStyle: { color: textColor, fontFamily: 'Inter' },
+                    top: 0
+                },
+                grid: { left: '2%', right: '2%', bottom: '12%', top: '15%', containLabel: true },
+                dataZoom: [
+                    { type: 'inside', start: 0, end: 100 },
+                    {
+                        type: 'slider', show: true, backgroundColor: 'transparent', borderColor: axisColor,
+                        fillerColor: 'rgba(178, 159, 132, 0.1)',
+                        textStyle: { color: textColor },
+                        bottom: 5, height: 8,
+                        handleIcon: 'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                        handleSize: '100%',
+                        handleStyle: { color: '#B29F84', borderWidth: 0 }
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: 'category', boundaryGap: false,
+                        data: ['冷启动期', '爆发放量期', '成熟调优期', '长尾衰退期'],
+                        axisLabel: { color: textColor, fontSize: 12, margin: 12 },
+                        axisLine: { lineStyle: { color: axisColor } }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value', name: '活跃用户规模',
+                        nameTextStyle: { color: textColor, padding: [0, 0, 0, 30] },
+                        axisLabel: { color: textColor },
+                        splitLine: { lineStyle: { color: '#F0EEE9', type: 'dashed' } }
+                    }
+                ],
+                series: [
+                    {
+                        name: '大R (Whale)', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 2, color: colorWhale }, showSymbol: false,
+                        areaStyle: { opacity: 0.6, color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: colorWhale }, { offset: 1, color: 'rgba(255,255,255,0.1)' }]) },
+                        data: [500, 3000, 8000, 4000]
+                    },
+                    {
+                        name: '小R (Low Spender)', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 2, color: colorLow }, showSymbol: false,
+                        areaStyle: { opacity: 0.6, color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: colorLow }, { offset: 1, color: 'rgba(255,255,255,0.1)' }]) },
+                        data: [3000, 25000, 40000, 15000]
+                    },
+                    {
+                        name: '普通用户 (Free)', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 2, color: colorFree }, showSymbol: false,
+                        areaStyle: { opacity: 0.6, color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: colorFree }, { offset: 1, color: 'rgba(255,255,255,0.1)' }]) },
+                        data: [15000, 100000, 150000, 60000]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+            window.addEventListener('resize', () => { myChart.resize(); });
+
+            const strategyData = [
+                {
+                    goal: "验证核心指标 。主要是测试各种接口、点位配置、SDK的回传，以及程序稳定性。",
+                    mindsetQuote: "“少花钱，多办事，看核心。”",
+                    mindsetDesc: "不求量，只求数据的代表性。快速迭代，快速验证。",
+                    meta: "开启宽泛受众广告，测试不同素材类型的点击率和转化率并且开始积累付费种子用户池，并初步建立用户模型。",
+                    google: "开启安装量 (tCPI) 广告系列，广泛的定位，测试基础 CPI。",
+                    applovin: "开户并且测试 SDK 集成是否稳定，观察基础流量表现。"
+                },
+                {
+                    goal: "以买量为主，完善付费用户模型。",
+                    mindsetQuote: "“激进竞价，全面铺开，素材为王。”",
+                    mindsetDesc: "相信算法，通过大规模素材投放来“洗”用户，抢占市场。",
+                    meta: "扩大用户数量，投放方式为通投 (Broad) + 兴趣受众。",
+                    google: "利用最大转化出价，在预算内买到更多的量级，测试产品在该市场的真实价格。",
+                    applovin: "大量开启算法加持的广告系列，优化竞价策略。"
+                },
+                {
+                    goal: "稳定 ROAS (Stability)。平衡用户规模和利润，延长生命周期，精细化运营。",
+                    mindsetQuote: "“精细运营，防疲劳，深挖 LTV。”",
+                    mindsetDesc: "从抢人转为精挑细选，关注用户长期价值和素材寿命。",
+                    meta: "付费模型已完成。采用 AEO+VO / Lookalike+AEO 增大付费量和付费率，并且细分受众，严格控制素材疲劳。",
+                    google: "UAC 2.5 针对 events 进行投放优化，提高预算内的付费率和 ARPU。",
+                    applovin: "分析回传数据中每个广告位表现和用户质量，以rose为核心指标预测回本周期。"
+                },
+                {
+                    goal: "最大化剩余价值 (Max Residual Value)。降低成本，维持剩余忠实用户，为新游戏沉淀用户资产。",
+                    mindsetQuote: "“防流失，成本控制，准备下一款。”",
+                    mindsetDesc: "以最低的成本维持运行，重点转向召回和沉淀。",
+                    meta: "聚焦重度用户的再营销 (Retargeting) 广告，通过老用户带新用户的方式获取长尾流量。增加 Custom 自定义受众找回高价值和活跃用户。",
+                    google: "大幅降低预算，切换回 tCPI 或极低的 tCPA，聚焦核心地区。采用 UAC 3.0 (App Engagement) 找回付费流失用户。",
+                }
+            ];
+
+            window.switchStage = function(stageIndex) {
+                document.querySelectorAll('.stage-btn').forEach((btn, idx) => {
+                    btn.classList.toggle('active', idx === stageIndex);
+                });
+
+                myChart.dispatchAction({ type: 'showTip', seriesIndex: 0, dataIndex: stageIndex });
+
+                const panel = document.getElementById('dataPanel');
+                panel.style.opacity = '0';
+                
+                setTimeout(() => {
+                    const data = strategyData[stageIndex];
+                    panel.innerHTML = `
+                        <div class="strategy-overview">
+                            <div class="strategy-block">
+                                <div class="block-title"><i class="ph ph-target"></i> 阶段主要目标</div>
+                                <div class="block-desc">${data.goal}</div>
+                            </div>
+                            <div class="strategy-block">
+                                <div class="block-title"><i class="ph ph-brain"></i> 核心策略思想</div>
+                                <div class="block-quote">${data.mindsetQuote}</div>
+                                <div class="block-desc">${data.mindsetDesc}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="channel-grid">
+                            <div class="channel-card">
+                                <div class="channel-header"><i class="ph ph-facebook-logo"></i> Meta</div>
+                                <div class="profile-desc">${data.meta}</div>
+                            </div>
+                            <div class="channel-card">
+                                <div class="channel-header"><i class="ph ph-google-logo"></i> Google UAC</div>
+                                <div class="profile-desc">${data.google}</div>
+                            </div>
+                            <div class="channel-card">
+                                <div class="channel-header"><i class="ph ph-triangle"></i> AppLovin</div>
+                                <div class="profile-desc">${data.applovin}</div>
+                            </div>
+                        </div>
+                    `;
+                    panel.style.opacity = '1';
+                }, 200);
+            };
+
+            // 初始化默认选中第一个
+            setTimeout(() => { switchStage(0); }, 300);
+        }
+    </script>
+</body>
+</html>
